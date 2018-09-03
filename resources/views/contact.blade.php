@@ -82,7 +82,7 @@
 
       <div class="container">
 
-        <form class="form" role="form">
+        <form class="form" id="form" role="form" method="POST">
           {{ csrf_field() }}
             <div class="form-group row">
               <div class="col-md-3">
@@ -96,7 +96,9 @@
                   placeholder="Enter some name"><br>
 
                   <input type="email" class="form-control" id="email" name="email" 
-                  placeholder="Enter Email" ><br>
+                  placeholder="Enter Email" >
+                  <span id="error_email"> </span><br>
+                  
 
                   <input type="text" class="form-control" id="phone" name="phone"
                   placeholder="Enter Phone" ><br>
@@ -105,7 +107,7 @@
                   <span class="glyphicon glyphicon-plus"></span> Save
                 </button>
               </div>
-              <br>
+              
             
             </div>
         </form>
@@ -187,7 +189,7 @@
               <div class="form-group">
                 <label class="control-label col-sm-2" for="email">Email:</label>
                 <div class="col-sm-10">
-                  <input type="email" class="form-control" id="e" required="">
+                  <input type="email" class="form-control" id="e" required=""><span id="error_e"> </span>
                 </div>
               </div>
               <div class="form-group">
@@ -272,72 +274,6 @@
 
 <script>
   $(function () {
-    //Initialize Select2 Elements
-    $('.select2').select2()
-
-    //Datemask dd/mm/yyyy
-    $('#datemask').inputmask('dd/mm/yyyy', { 'placeholder': 'dd/mm/yyyy' })
-    //Datemask2 mm/dd/yyyy
-    $('#datemask2').inputmask('mm/dd/yyyy', { 'placeholder': 'mm/dd/yyyy' })
-    //Money Euro
-    $('[data-mask]').inputmask()
-
-    //Date range picker
-    $('#reservation').daterangepicker()
-    //Date range picker with time picker
-    $('#reservationtime').daterangepicker({
-      timePicker         : true,
-      timePickerIncrement: 30,
-      format             : 'MM/DD/YYYY h:mm A'
-    })
-    //Date range as a button
-    $('#daterange-btn').daterangepicker(
-      {
-        ranges   : {
-          'Today'       : [moment(), moment()],
-          'Yesterday'   : [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-          'Last 7 Days' : [moment().subtract(6, 'days'), moment()],
-          'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-          'This Month'  : [moment().startOf('month'), moment().endOf('month')],
-          'Last Month'  : [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-        },
-        startDate: moment().subtract(29, 'days'),
-        endDate  : moment()
-      },
-      function (start, end) {
-        $('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'))
-      }
-    )
-
-    //iCheck for checkbox and radio inputs
-    $('input[type="checkbox"].minimal, input[type="radio"].minimal').iCheck({
-      checkboxClass: 'icheckbox_minimal-blue',
-      radioClass   : 'iradio_minimal-blue'
-    })
-    //Red color scheme for iCheck
-    $('input[type="checkbox"].minimal-red, input[type="radio"].minimal-red').iCheck({
-      checkboxClass: 'icheckbox_minimal-red',
-      radioClass   : 'iradio_minimal-red'
-    })
-    //Flat red color scheme for iCheck
-    $('input[type="checkbox"].flat-red, input[type="radio"].flat-red').iCheck({
-      checkboxClass: 'icheckbox_flat-green',
-      radioClass   : 'iradio_flat-green'
-    })
-
-    //Colorpicker
-    $('.my-colorpicker1').colorpicker()
-    //color picker with addon
-    $('.my-colorpicker2').colorpicker()
-
-    //Timepicker
-    $('.timepicker').timepicker({
-      showInputs: false
-    })
-  })
-</script>
-<script>
-  $(function () {
     $("#table").DataTable();
     $('#example2').DataTable({
       "paging": true,
@@ -348,6 +284,92 @@
       "autoWidth": false
     });
   });
+
+
+$(document).ready(function(){
+
+ $('#email').blur(function(){
+  var error_email = '';
+  var email = $('#email').val();
+  var _token = $('input[name="_token"]').val();
+  var filter = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+  if(!filter.test(email))
+  {    
+   $('#error_email').html('<label class="text-danger">Invalid Email</label>');
+   $('#email').addClass('has-error');
+   $('#add').attr('disabled', 'disabled');
+  }
+  else
+  {
+   $.ajax({
+    url:"{{ route('email_available.check') }}",
+    method:"POST",
+    data:{email:email, _token:_token},
+    success:function(result)
+    {
+     if(result == 'unique')
+     {
+      $('#error_email').html('<label class="text-success">Email Available</label>');
+      $('#email').removeClass('has-error');
+      $('#add').attr('disabled', false);
+     }
+     else
+     {
+      $('#error_email').html('<label class="text-danger">Email not Available</label>');
+      $('#email').addClass('has-error');
+      $('#add').attr('disabled', 'disabled');
+     }
+    }
+   })
+  }
+ });
+ 
+
+
+
+ $('#e').blur(function(){
+  var error_e = '';
+  var e = $('#e').val();
+  var _token = $('input[name="_token"]').val();
+  var filter = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+  if(!filter.test(e))
+  {    
+   $('#error_e').html('<label class="text-danger">Invalid Email</label>');
+   $('#e').addClass('has-error');
+   $('.actionBtn').attr('disabled', 'disabled');
+  }
+  else
+  {
+   $.ajax({
+    url:"{{ route('email_available.modal_check') }}",
+    method:"POST",
+    data:{e:e, _token:_token},
+    success:function(result)
+    {
+     if(result == 'unique')
+     {
+      $('#error_e').html('<label class="text-success">Email Available</label>');
+      $('#e').removeClass('has-error');
+      $('.actionBtn').attr('disabled', false);
+     }
+     else
+     {
+      $('#error_e').html('<label class="text-danger">Email not Available</label>');
+      $('#e').addClass('has-error');
+      $('.actionBtn').attr('disabled', 'disabled');
+     }
+    }
+   })
+  }
+ });
+ 
+});
+
+
+
+
+
+
 </script>
   </body>
 </html>

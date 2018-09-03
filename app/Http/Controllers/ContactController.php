@@ -8,13 +8,50 @@ use Validator;
 use Response;
 use Illuminate\Support\Facades\Input;
 use Yajra\Datatables\Facades\Datatables;
+use DB;
 
 class ContactController extends Controller
 {
-   public function index()
+
+    function check(Request $request)
     {
-        return Datatables::of(Contact::query())->make(true);
+         if($request->get('email'))
+         {
+              $email = $request->get('email');
+              // $phone = $request->get('phone');
+              $data = DB::table("contacts")
+               ->where('email', $email)
+               ->count();
+              if($data > 0)
+              {
+                echo 'not_unique';
+              }
+              else
+              {
+                echo 'unique';
+              }
+         }
     }
+
+    function modal_check(Request $request)
+    {
+         if($request->get('e'))
+         {
+              $e = $request->get('e');
+              $data = DB::table("contacts")
+               ->where('email', $e)
+               ->count();
+              if($data > 0)
+              {
+                echo 'not_unique';
+              }
+              else
+              {
+                echo 'unique';
+              }
+         }
+    }
+    
     public function addItem(Request $request)
     {
         $rules = array(

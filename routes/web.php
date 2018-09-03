@@ -24,3 +24,8 @@ Route::get('/', 'ContactController@readItems');
 Route::post('addItem', 'ContactController@addItem');
 Route::post('editItem', 'ContactController@editItem');
 Route::post('deleteItem', 'ContactController@deleteItem');
+
+// Route::post('user_exists', 'ContactController@user_exists');
+// Route::post('/check_user', array('as' => '', 'uses' => 'ContactController@check_user'));
+Route::post('/email_available/check', 'ContactController@check')->name('email_available.check');
+Route::post('/email_available/modal_check', 'ContactController@modal_check')->name('email_available.modal_check');
