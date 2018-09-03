@@ -87,7 +87,8 @@ $(document).ready(function() {
         $('#name').val('');
         $('#email').val('');
         $('#phone').val('');
-        return view('/');
+        // return view('/');
+        
     });
     $('.modal-footer').on('click', '.delete', function() {
         $.ajax({

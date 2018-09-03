@@ -73,6 +73,7 @@ class ContactController extends Controller
             $data->save();
 
             return response()->json($data);
+            
         }
     }
     public function readItems(Request $req)

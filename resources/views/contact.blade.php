@@ -82,7 +82,7 @@
 
       <div class="container">
 
-        <form class="form" id="form" role="form" method="POST">
+        <form class="form" id="form" role="form">
           {{ csrf_field() }}
             <div class="form-group row">
               <div class="col-md-3">
@@ -107,7 +107,7 @@
                   <span class="glyphicon glyphicon-plus"></span> Save
                 </button>
               </div>
-              
+            
             
             </div>
         </form>
@@ -142,7 +142,7 @@
                                 <td>{{$item->name}}</td>
                                 <td>{{$item->email}}</td>
                                 <td>{{$item->phone}}</td>
-                                <td><button class="edit-modal btn btn-warning" data-id="{{$item->id}}"
+                                <td><button class="edit-modal btn btn-outline-primary" data-id="{{$item->id}}"
                                     data-name="{{$item->name}}" data-email="{{$item->email}}" data-phone="{{$item->phone}}">
                                     Edit
                                   </button>
